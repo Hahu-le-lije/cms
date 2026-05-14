@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Admin App
 
-## Getting Started
+This is the CMS admin frontend for managing content packs and pack versions. It is built with Next.js, TypeScript, and Tailwind CSS, and it talks to the Laravel CMS backend through authenticated API requests.
 
-First, run the development server:
+## What it does
+
+- Lists content packs.
+- Creates, edits, and deletes packs.
+- Manages pack versions.
+- Persists the admin bearer token in local storage so the session survives refreshes.
+
+## Requirements
+
+- Node.js 20.x.
+- The Laravel CMS backend running locally.
+- A valid Laravel Sanctum bearer token for admin access.
+
+## Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The `dev` script uses `scripts/dev.sh`, which is set up to run the app with the expected Node version on this machine.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open the app in the browser:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+http://localhost:3000
+```
 
-## Learn More
+## Admin access
 
-To learn more about Next.js, take a look at the following resources:
+When the app opens, it prompts for the admin bearer token. Paste the token once and it will be stored in the browser under the admin token key used by the app.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If you need a fresh token, create one from the Laravel CMS backend auth flow and paste it into the admin login screen.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Main routes
 
-## Deploy on Vercel
+- `/` - app entry point.
+- `/packs` - pack list and delete actions.
+- `/packs/create` - create a new pack.
+- `/packs/[id]/edit` - edit an existing pack.
+- `/packs/[id]/versions` - manage versions for a pack.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Backend dependency
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The frontend expects the CMS backend API to be available and reachable from the configured CMS API base URL. If requests fail, first confirm that the backend is running and that the token is valid.
+
+## Scripts
+
+- `npm run dev` - start the development server.
+- `npm run build` - build the production app.
+- `npm run start` - run the production build.
+- `npm run lint` - run ESLint.
+
+## Notes
+
+- The admin token is stored in the browser so you do not need to re-enter it on every refresh.
+- The UI is centered around content pack management, so the packs routes are the main workflow surface.
