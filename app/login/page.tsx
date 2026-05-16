@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setStoredAdminToken } from '@/lib/adminToken';
+import { login as cmsLogin } from '@/lib/cmsApi';
 
 const LoginPage = () => {
   const router = useRouter();
@@ -17,24 +18,8 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json', // Critical for Laravel to return JSON errors
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed');
-      }
-
-      // Laravel typically returns { access_token: "...", token_type: "Bearer" }
-      // Adjust 'access_token' if your Laravel controller uses a different key
-      const token = data.access_token || data.token;
+      const data = await cmsLogin(email, password);
+      const token = data.token || data.access_token || data?.token;
 
       if (token) {
         setStoredAdminToken(token);

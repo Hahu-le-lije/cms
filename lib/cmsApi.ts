@@ -178,3 +178,48 @@ export const deleteVersion = (
       token,
     }
   );
+
+/* =========================
+   PARENT / CHILD FEATURES
+   ========================= */
+
+export const getChildSubjects = (childId: string, token: string) =>
+  request(`/subjects?child_id=${encodeURIComponent(childId)}`, {
+    token,
+  });
+
+export const updateChildSubjects = (
+  payload: { child_id: string; subjects: Array<{ game_type_id: number; status: boolean }> },
+  token: string
+) =>
+  request(`/subjects`, {
+    method: "PUT",
+    token,
+    body: JSON.stringify(payload),
+  });
+
+export const getRecommendations = (childId: string, token: string) =>
+  request(`/children/${encodeURIComponent(childId)}/tasks/recommendations`, {
+    token,
+  });
+
+export const assignTask = (childId: string, data: { content_id: number; game_type_id: number; reason?: string }, token: string) =>
+  request(`/children/${encodeURIComponent(childId)}/tasks/assign`, {
+    method: "POST",
+    token,
+    body: JSON.stringify(data),
+  });
+
+/* =========================
+   ADMIN HELPERS
+   ========================= */
+
+export const listAdminChildren = (token: string) =>
+  request(`/admin/children`, {
+    token,
+  });
+
+export const getAssignedTasks = (childId: string, token: string) =>
+  request(`/admin/children/${encodeURIComponent(childId)}/assigned-tasks`, {
+    token,
+  });
