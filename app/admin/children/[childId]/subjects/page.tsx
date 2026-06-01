@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getChildSubjects, updateChildSubjects } from "../../../../../lib/cmsApi";
+import { getChildSubjects, updateChildSubjects } from "@/lib/cmsApi";
 import { useRouter } from "next/navigation";
 
 export default function ChildSubjectsPage({ params }: { params: { childId: string } }) {
