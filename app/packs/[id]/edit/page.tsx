@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getContentPack, updateContentPack } from '@/lib/cmsApi';
 import { getStoredAdminToken } from '@/lib/adminToken';
+import { CMS_GAME_TYPES } from '@/lib/cmsGameTypes';
 
 const EditPackPage = () => {
   const router = useRouter();
@@ -12,10 +13,16 @@ const EditPackPage = () => {
   const id = params?.id as string;
   const token = getStoredAdminToken();
 
+  useEffect(() => {
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router, token]);
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    game_type: 'flashcard',
+    game_type: CMS_GAME_TYPES[0].value,
     thumbnail_url: '',
     size_mb: '0',
     is_active: true,
@@ -34,7 +41,7 @@ const EditPackPage = () => {
         setFormData({
           title: pack.title || '',
           description: pack.description || '',
-          game_type: pack.game_type || 'flashcard',
+          game_type: pack.game_type || CMS_GAME_TYPES[0].value,
           thumbnail_url: pack.thumbnail_url || '',
           size_mb: String(pack.size_mb || 0),
           is_active: pack.is_active ?? true,
@@ -157,11 +164,11 @@ const EditPackPage = () => {
                       onChange={handleChange}
                       className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold appearance-none"
                     >
-                      <option value="flashcard">Flashcards</option>
-                      <option value="matching">Matching Game</option>
-                      <option value="memory">Memory Challenge</option>
-                      <option value="puzzle">Logic Puzzle</option>
-                      <option value="vocabulary">Vocabulary Hub</option>
+                      {CMS_GAME_TYPES.map((gameType) => (
+                        <option key={gameType.value} value={gameType.value}>
+                          {gameType.label}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>
@@ -251,7 +258,7 @@ const EditPackPage = () => {
                   <div className="flex items-center gap-4 border-t border-slate-50 pt-6">
                     <div className="flex-1">
                       <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">Genre</p>
-                      <p className="text-slate-800 font-bold text-xs capitalize">{formData.game_type}</p>
+                      <p className="text-slate-800 font-bold text-xs">{formData.game_type}</p>
                     </div>
                     <div className="flex-1">
                       <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mb-1">Payload</p>

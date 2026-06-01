@@ -13,6 +13,15 @@
 - `ContentPack`: Slug, title, description, game_type, thumbnail_url, size_mb, is_active
 - `ContentPackVersion`: Version tracking with semantic versions, payloads, checksums
 
+The CMS and admin UI now use these canonical game_type values everywhere:
+- `Fidel Tracing`
+- `Fidel Match`
+- `Pic-to-Word`
+- `Word Builder`
+- `Listen & Fill`
+- `Speak Up`
+- `Story Quiz`
+
 ✅ **Routes**
 - Public: `/api/content/packs`, `/api/content/packs/{slug}/manifest`, `/api/content/packs/{slug}/download`
 - Auth: `/api/auth/login`, `/api/auth/logout`, `/api/auth/user`
@@ -143,7 +152,7 @@ curl -X POST http://localhost:8000/api/admin/content-packs \
     "slug": "test-pack",
     "title": "Test Pack",
     "description": "A test pack",
-    "game_type": "quiz",
+    "game_type": "Story Quiz",
     "thumbnail_url": "https://...",
     "size_mb": 10,
     "is_active": true

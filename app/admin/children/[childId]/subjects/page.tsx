@@ -11,7 +11,11 @@ export default function ChildSubjectsPage({ params }: { params: { childId: strin
 
   useEffect(() => {
     const token = localStorage.getItem("cms_admin_token") || undefined;
-    if (!token) return;
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     getChildSubjects(childId, token).then((data) => setSubjects(data.subjects || [])).catch(() => {});
   }, [childId]);
 

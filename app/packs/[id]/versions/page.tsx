@@ -27,6 +27,12 @@ const ManageVersionsPage = () => {
   });
 
   useEffect(() => {
+    if (!token) {
+      router.push('/login');
+    }
+  }, [router, token]);
+
+  useEffect(() => {
     if (!id || !token) return;
     loadVersions();
   }, [id, token]);
@@ -34,8 +40,8 @@ const ManageVersionsPage = () => {
   const loadVersions = async () => {
     try {
       setLoading(true);
-      const all = await listVersions(token);
-      setVersions(all.filter((v: any) => String(v.content_pack_id) === String(id)));
+      const all = await listVersions(token, Number(id));
+      setVersions(Array.isArray(all) ? all : []);
     } catch (err: any) {
       setError(err.message);
     } finally {

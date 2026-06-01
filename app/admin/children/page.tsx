@@ -2,15 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { listAdminChildren } from "../../../lib/cmsApi";
 
 export default function ChildrenPage() {
   const [children, setChildren] = useState<string[]>([]);
   const [childInput, setChildInput] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("cms_admin_token") || undefined;
-    if (!token) return;
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     listAdminChildren(token).then((data) => setChildren(data.children || [])).catch(() => {});
   }, []);
 

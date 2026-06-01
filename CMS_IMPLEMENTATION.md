@@ -177,6 +177,15 @@ All admin pack routes require `auth:sanctum` and `admin` middleware.
 #### GET `/api/admin/content-packs`
 Lists all packs for the admin UI.
 
+The CMS now treats these game_type values as canonical across the admin UI and backend:
+- `Fidel Tracing`
+- `Fidel Match`
+- `Pic-to-Word`
+- `Word Builder`
+- `Listen & Fill`
+- `Speak Up`
+- `Story Quiz`
+
 Output:
 ```json
 [
@@ -185,7 +194,7 @@ Output:
     "slug": "animals-pack",
     "title": "Animals Pack",
     "description": "A pack of animal content",
-    "game_type": "quiz",
+    "game_type": "Story Quiz",
     "thumbnail_url": "https://...",
     "size_mb": 12.5,
     "is_active": true,
@@ -209,7 +218,7 @@ Output:
   "slug": "animals-pack",
   "title": "Animals Pack",
   "description": "A pack of animal content",
-  "game_type": "quiz",
+  "game_type": "Story Quiz",
   "thumbnail_url": "https://...",
   "size_mb": 12.5,
   "is_active": true,
@@ -230,7 +239,7 @@ Input:
   "slug": "animals-pack",
   "title": "Animals Pack",
   "description": "A pack of animal content",
-  "game_type": "quiz",
+  "game_type": "Story Quiz",
   "thumbnail_url": "https://...",
   "size_mb": 12.5,
   "is_active": true
@@ -244,7 +253,7 @@ Output:
   "slug": "animals-pack",
   "title": "Animals Pack",
   "description": "A pack of animal content",
-  "game_type": "quiz",
+  "game_type": "Story Quiz",
   "thumbnail_url": "https://...",
   "size_mb": 12.5,
   "is_active": true
@@ -253,13 +262,12 @@ Output:
 
 #### PUT `/api/admin/content-packs/{id}`
 Updates an existing pack.
-
 Input:
 ```json
 {
   "title": "Updated Animals Pack",
   "description": "Updated description",
-  "game_type": "quiz",
+  "game_type": "Story Quiz",
   "thumbnail_url": "https://...",
   "size_mb": 13,
   "is_active": true
@@ -273,7 +281,7 @@ Output:
   "slug": "animals-pack",
   "title": "Updated Animals Pack",
   "description": "Updated description",
-  "game_type": "quiz",
+  "game_type": "Story Quiz",
   "thumbnail_url": "https://...",
   "size_mb": 13,
   "is_active": true
@@ -311,7 +319,7 @@ Output:
     },
     "min_app_version": "1.0.0",
     "published_at": "2026-05-09T00:00:00.000000Z"
-  }
+      "game_type": "Story Quiz",
 ]
 ```
 
@@ -386,7 +394,7 @@ Output:
 - `slug`: required on create, unique, string
 - `title`: required, string
 - `description`: optional, string
-- `game_type`: optional, string
+- `game_type`: optional, string, should match one of the canonical CMS game types listed above
 - `thumbnail_url`: optional, string
 - `size_mb`: optional, numeric
 - `is_active`: optional, boolean

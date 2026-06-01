@@ -1,10 +1,12 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  "http://localhost:8000/api";
+  "http://localhost:8000";
 
 type RequestOptions = RequestInit & {
   token?: string;
 };
+
+import { clearStoredAdminToken } from './adminToken';
 
 async function request(
   endpoint: string,
@@ -39,6 +41,13 @@ async function request(
   } catch (_) {}
 
   if (!response.ok) {
+    // If unauthorized, clear stored token so the UI can re-authenticate
+    if (response.status === 401) {
+      try {
+        clearStoredAdminToken();
+      } catch (_) {}
+    }
+
     throw new Error(
       data?.message || "API request failed"
     );
@@ -55,7 +64,7 @@ export const login = (
   email: string,
   password: string
 ) =>
-  request("/auth/login", {
+  request("/api/auth/login", {
     method: "POST",
     body: JSON.stringify({
       email,
@@ -64,13 +73,13 @@ export const login = (
   });
 
 export const logout = (token: string) =>
-  request("/auth/logout", {
+  request("/api/auth/logout", {
     method: "POST",
     token,
   });
 
 export const getCurrentUser = (token: string) =>
-  request("/auth/user", {
+  request("/api/auth/user", {
     token,
   });
 
@@ -81,7 +90,7 @@ export const getCurrentUser = (token: string) =>
 export const listContentPacks = (
   token: string
 ) =>
-  request("/admin/content-packs", {
+  request("/api/admin/content-packs", {
     token,
   });
 
@@ -89,7 +98,7 @@ export const getContentPack = (
   id: string,
   token: string
 ) =>
-  request(`/admin/content-packs/${id}`, {
+  request(`/api/admin/content-packs/${id}`, {
     token,
   });
 
@@ -97,7 +106,7 @@ export const createContentPack = (
   data: any,
   token: string
 ) =>
-  request("/admin/content-packs", {
+  request("/api/admin/content-packs", {
     method: "POST",
     token,
     body: JSON.stringify(data),
@@ -108,7 +117,7 @@ export const updateContentPack = (
   data: any,
   token: string
 ) =>
-  request(`/admin/content-packs/${id}`, {
+  request(`/api/admin/content-packs/${id}`, {
     method: "PUT",
     token,
     body: JSON.stringify(data),
@@ -118,7 +127,7 @@ export const deleteContentPack = (
   id: string,
   token: string
 ) =>
-  request(`/admin/content-packs/${id}`, {
+  request(`/api/admin/content-packs/${id}`, {
     method: "DELETE",
     token,
   });
@@ -136,7 +145,7 @@ export const listVersions = (
     : "";
 
   return request(
-    `/admin/content-pack-versions${query}`,
+    `/api/admin/content-pack-versions${query}`,
     {
       token,
     }
@@ -147,7 +156,7 @@ export const createVersion = (
   data: any,
   token: string
 ) =>
-  request("/admin/content-pack-versions", {
+  request("/api/admin/content-pack-versions", {
     method: "POST",
     token,
     body: JSON.stringify(data),
@@ -159,7 +168,7 @@ export const updateVersion = (
   token: string
 ) =>
   request(
-    `/admin/content-pack-versions/${id}`,
+    `/api/admin/content-pack-versions/${id}`,
     {
       method: "PUT",
       token,
@@ -172,7 +181,7 @@ export const deleteVersion = (
   token: string
 ) =>
   request(
-    `/admin/content-pack-versions/${id}`,
+    `/api/admin/content-pack-versions/${id}`,
     {
       method: "DELETE",
       token,
@@ -184,7 +193,7 @@ export const deleteVersion = (
    ========================= */
 
 export const getChildSubjects = (childId: string, token: string) =>
-  request(`/subjects?child_id=${encodeURIComponent(childId)}`, {
+  request(`/api/subjects?child_id=${encodeURIComponent(childId)}`, {
     token,
   });
 
@@ -192,19 +201,19 @@ export const updateChildSubjects = (
   payload: { child_id: string; subjects: Array<{ game_type_id: number; status: boolean }> },
   token: string
 ) =>
-  request(`/subjects`, {
+  request(`/api/subjects`, {
     method: "PUT",
     token,
     body: JSON.stringify(payload),
   });
 
 export const getRecommendations = (childId: string, token: string) =>
-  request(`/children/${encodeURIComponent(childId)}/tasks/recommendations`, {
+  request(`/api/children/${encodeURIComponent(childId)}/tasks/recommendations`, {
     token,
   });
 
 export const assignTask = (childId: string, data: { content_id: number; game_type_id: number; reason?: string }, token: string) =>
-  request(`/children/${encodeURIComponent(childId)}/tasks/assign`, {
+  request(`/api/children/${encodeURIComponent(childId)}/tasks/assign`, {
     method: "POST",
     token,
     body: JSON.stringify(data),
@@ -215,11 +224,11 @@ export const assignTask = (childId: string, data: { content_id: number; game_typ
    ========================= */
 
 export const listAdminChildren = (token: string) =>
-  request(`/admin/children`, {
+  request(`/api/admin/children`, {
     token,
   });
 
 export const getAssignedTasks = (childId: string, token: string) =>
-  request(`/admin/children/${encodeURIComponent(childId)}/assigned-tasks`, {
+  request(`/api/admin/children/${encodeURIComponent(childId)}/assigned-tasks`, {
     token,
   });

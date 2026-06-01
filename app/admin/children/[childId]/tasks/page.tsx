@@ -12,7 +12,11 @@ export default function ChildTasksPage({ params }: { params: { childId: string }
 
   const load = () => {
     const token = localStorage.getItem("cms_admin_token") || undefined;
-    if (!token) return;
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
     getRecommendations(childId, token).then((d) => setRecs(d.recommendations || [])).catch(() => {});
     getAssignedTasks(childId, token).then((d) => setAssigned(d.assigned_tasks || [])).catch(() => {});
   };

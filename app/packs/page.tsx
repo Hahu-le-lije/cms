@@ -2,13 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   listContentPacks,
   deleteContentPack,
+  logout as cmsLogout,
 } from "@/lib/cmsApi";
 import {
   getStoredAdminToken,
   setStoredAdminToken,
+  clearStoredAdminToken,
 } from "@/lib/adminToken";
 
 const PacksList = () => {
@@ -21,15 +24,19 @@ const PacksList = () => {
     string | number | null
   >(null);
 
+  const router = useRouter();
+
   useEffect(() => {
     const storedToken = getStoredAdminToken();
 
     if (storedToken) {
       setToken(storedToken);
+    } else {
+      router.push('/login');
     }
 
     setTokenReady(true);
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (!tokenReady || !token) return;
@@ -48,6 +55,16 @@ const PacksList = () => {
       setPacks(Array.isArray(data) ? data : []);
     } catch (err: any) {
       console.error(err);
+      // If unauthenticated, clear the stored token and redirect to login
+      if (err?.message && String(err.message).toLowerCase().includes('unauth')) {
+        try {
+          setStoredAdminToken('');
+        } catch (_) {}
+
+        // force reload to show login input or redirect
+        window.location.href = '/login';
+        return;
+      }
 
       setError(
         err?.message || "Failed to load content packs"
@@ -89,11 +106,33 @@ const PacksList = () => {
     } catch (err: any) {
       console.error(err);
 
+      if (err?.message && String(err.message).toLowerCase().includes('unauth')) {
+        try {
+          setStoredAdminToken('');
+        } catch (_) {}
+
+        window.location.href = '/login';
+        return;
+      }
+
       setError(
         err?.message || "Failed to delete pack"
       );
     } finally {
       setDeleting(null);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      if (token) {
+        await cmsLogout(token);
+      }
+    } catch (_) {
+      // fall through to local logout
+    } finally {
+      clearStoredAdminToken();
+      router.push('/login');
     }
   };
 
@@ -112,43 +151,10 @@ const PacksList = () => {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-10 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-blue-600/20 text-blue-500 rounded-2xl mb-6 flex items-center justify-center mx-auto">
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
-          </div>
-
-          <h1 className="text-2xl font-bold text-white mb-2">
-            Admin Authorization
-          </h1>
-
-          <p className="text-slate-400 mb-8 text-sm">
-            Enter your Laravel Sanctum bearer token.
-          </p>
-
-          <input
-            type="password"
-            className="w-full px-5 py-4 bg-slate-800 border border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-slate-500 transition-all mb-6"
-            placeholder="Paste token..."
-            value={token}
-            onChange={handleTokenChange}
-          />
-
-          <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">
-            Secure Session
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+          <p className="text-slate-500 font-medium">Redirecting to login...</p>
         </div>
       </div>
     );
@@ -187,25 +193,34 @@ const PacksList = () => {
             </div>
           </div>
 
-          <Link href="/packs/create">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all flex items-center gap-2">
-              <span>Create Pack</span>
-
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleLogout}
+                className="bg-white border border-slate-200 hover:border-slate-300 text-slate-600 text-sm font-bold px-5 py-3 rounded-2xl transition-all"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </button>
-          </Link>
+                Logout
+              </button>
+
+              <Link href="/packs/create">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all flex items-center gap-2">
+                  <span>Create Pack</span>
+
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                </button>
+              </Link>
+            </div>
         </div>
       </nav>
 
@@ -323,7 +338,7 @@ const PacksList = () => {
                       </p>
 
                       <p className="text-slate-800 font-bold text-xs">
-                        {pack.game_type || "General"}
+                        {pack.game_type}
                       </p>
                     </div>
 

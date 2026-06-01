@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { setStoredAdminToken } from '@/lib/adminToken';
+import { getStoredAdminToken } from '@/lib/adminToken';
 import { login as cmsLogin } from '@/lib/cmsApi';
 
 const LoginPage = () => {
@@ -11,6 +13,12 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (getStoredAdminToken()) {
+      router.replace('/packs');
+    }
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
