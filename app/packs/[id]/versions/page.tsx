@@ -8,6 +8,7 @@ import { getStoredAdminToken } from '@/lib/adminToken';
 
 const ManageVersionsPage = () => {
   const params = useParams();
+  const router = useRouter();
   const id = params?.id as string;
   const token = getStoredAdminToken();
 
