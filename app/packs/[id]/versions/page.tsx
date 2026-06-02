@@ -98,13 +98,32 @@ const ManageVersionsPage = () => {
     setSubmitting(true);
 
     try {
-      const payload = form.payload.trim() ? JSON.parse(form.payload) : {};
+      const rawJson = JSON.parse(form.payload);
       
+      // Transform logic: If user pastes nested "levels" JSON, flatten it
+      let flattenedPayload = [];
+      
+      if (rawJson.fidel_tracing?.levels) {
+        // Flatten the specific "fidel_tracing" nested structure
+        flattenedPayload = Object.values(rawJson.fidel_tracing.levels).map((level: any) => ({
+          type: 'fidel-tracing',
+          title: level.question1.word,
+          difficulty: 'beginner',
+          content: {
+            voice: level.question1.voice,
+            image: level.question1.image
+          }
+        }));
+      } else {
+        // Fallback: assume user already pasted the correct array
+        flattenedPayload = Array.isArray(rawJson) ? rawJson : [rawJson];
+      }
+
       await createVersion(
         {
           content_pack_id: Number(id),
           version: String(form.version),
-          payload,
+          payload: flattenedPayload, // Send the flattened array here
           checksum: form.checksum,
           size_bytes: form.size_bytes ? Number(form.size_bytes) : 0,
           min_app_version: form.min_app_version || '',
@@ -113,15 +132,8 @@ const ManageVersionsPage = () => {
         token,
       );
 
-      setForm({
-        version: '',
-        payload: '{}',
-        checksum: '',
-        size_bytes: '',
-        min_app_version: '',
-        published_at: '',
-      });
-
+      // Reset and reload
+      setForm({ ...form, version: '', payload: '{}' });
       await loadVersions();
     } catch (err: any) {
       setError(err instanceof SyntaxError ? 'Payload must be valid JSON' : err.message);
