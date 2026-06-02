@@ -138,7 +138,7 @@ const EditPackPage = () => {
                     required
                     value={formData.title}
                     onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
                   />
                 </div>
 
@@ -150,7 +150,7 @@ const EditPackPage = () => {
                     rows={4}
                     value={formData.description}
                     onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all resize-none"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
                   />
                 </div>
 
@@ -162,7 +162,7 @@ const EditPackPage = () => {
                       name="game_type"
                       value={formData.game_type}
                       onChange={handleChange}
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold appearance-none"
+                      className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold appearance-none"
                     >
                       {CMS_GAME_TYPES.map((gameType) => (
                         <option key={gameType.value} value={gameType.value}>
@@ -179,7 +179,7 @@ const EditPackPage = () => {
                       step="0.1"
                       value={formData.size_mb}
                       onChange={handleChange}
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold transition-all"
+                      className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
                     />
                   </div>
                 </div>
@@ -192,7 +192,7 @@ const EditPackPage = () => {
                     name="thumbnail_url"
                     value={formData.thumbnail_url}
                     onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
                   />
                 </div>
 

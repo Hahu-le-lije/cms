@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-const nextConfig: NextConfig = {
-  allowedDevOrigins: ["172.17.22.22", "localhost"],
+export function middleware(request: NextRequest) {
+  const response = NextResponse.next();
+  
+  // Set CORS headers
+  response.headers.set('Access-Control-Allow-Origin', '*'); // Or specify your origins
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  return response;
+}
+
+export const config = {
+  matcher: '/api/:path*',
 };
-
-export default nextConfig;

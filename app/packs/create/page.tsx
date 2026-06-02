@@ -106,7 +106,7 @@ const CreatePackPage = () => {
                       value={formData.title}
                       onChange={handleChange}
                       placeholder="e.g. Advanced Geometry"
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
+                      className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-mono text-sm transition-all"
                     />
                   </div>
                   <div>
@@ -118,7 +118,7 @@ const CreatePackPage = () => {
                       value={formData.slug}
                       onChange={handleChange}
                       placeholder="geometry-pack-01"
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-mono text-sm transition-all"
+                      className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-mono text-sm transition-all"
                     />
                   </div>
                 </div>
@@ -132,7 +132,7 @@ const CreatePackPage = () => {
                     value={formData.description}
                     onChange={handleChange}
                     placeholder="Provide a brief overview of the content included in this pack..."
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all resize-none"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-mono text-sm transition-all"
                   />
                 </div>
 
@@ -144,7 +144,7 @@ const CreatePackPage = () => {
                       name="game_type"
                       value={formData.game_type}
                       onChange={handleChange}
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold appearance-none"
+                      className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold appearance-none"
                     >
                       {CMS_GAME_TYPES.map((gameType) => (
                         <option key={gameType.value} value={gameType.value}>
@@ -161,7 +161,7 @@ const CreatePackPage = () => {
                       step="0.1"
                       value={formData.size_mb}
                       onChange={handleChange}
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-bold transition-all"
+                      className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-mono text-sm transition-all"
                     />
                   </div>
                 </div>
@@ -175,7 +175,7 @@ const CreatePackPage = () => {
                     value={formData.thumbnail_url}
                     onChange={handleChange}
                     placeholder="https://assets.cdn.com/cover.png"
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-medium transition-all"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 font-mono text-sm transition-all"
                   />
                 </div>
 

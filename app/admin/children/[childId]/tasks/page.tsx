@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getRecommendations, assignTask, getAssignedTasks } from "@/lib/cmsApi";
+import { getRecommendations, assignTask, getAssignedTasks } from "../../../../../lib/cmsApi";
 import { useRouter } from "next/navigation";
 
 export default function ChildTasksPage({ params }: { params: { childId: string } }) {

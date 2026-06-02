@@ -38,6 +38,38 @@ const ManageVersionsPage = () => {
     loadVersions();
   }, [id, token]);
 
+  // Automatically calculate checksum and size whenever payload changes
+  useEffect(() => {
+    const updateMetadata = async () => {
+      try {
+        const payloadStr = form.payload.trim();
+        // Only calculate if there's something to calculate
+        if (!payloadStr) return;
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(payloadStr);
+        
+        // Size in bytes
+        const size = data.length;
+        
+        // SHA-256 Checksum
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        
+        setForm(prev => ({
+          ...prev,
+          size_bytes: String(size),
+          checksum: hashHex
+        }));
+      } catch (e) {
+        // Silently fail for malformed JSON during typing
+      }
+    };
+    
+    updateMetadata();
+  }, [form.payload]);
+
   const loadVersions = async () => {
     try {
       setLoading(true);
@@ -52,7 +84,12 @@ const ManageVersionsPage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (name === 'version' || name === 'min_app_version') {
+    const sanitized = value.replace(/[^0-9.]/g, '');
+    setForm(prev => ({ ...prev, [name]: sanitized }));
+  } else {
     setForm(prev => ({ ...prev, [name]: value }));
+  }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,8 +102,8 @@ const ManageVersionsPage = () => {
       
       await createVersion(
         {
-          content_pack_id: id,
-          version: form.version,
+          content_pack_id: Number(id),
+          version: String(form.version),
           payload,
           checksum: form.checksum,
           size_bytes: form.size_bytes ? Number(form.size_bytes) : 0,
@@ -194,7 +231,7 @@ const ManageVersionsPage = () => {
                     placeholder="e.g. 1.0.4"
                     value={form.version}
                     onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 font-bold transition-all"
                   />
                 </div>
                 <div>
@@ -204,7 +241,7 @@ const ManageVersionsPage = () => {
                     placeholder="e.g. 2.0.0"
                     value={form.min_app_version}
                     onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-300 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 font-bold transition-all"
                   />
                 </div>
               </div>
@@ -223,22 +260,22 @@ const ManageVersionsPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                 <div className="md:col-span-2">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Checksum (SHA256)</label>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Checksum (Auto-generated)</label>
                   <input
                     name="checksum"
+                    readOnly
                     value={form.checksum}
-                    onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-mono text-xs"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl font-mono text-xs text-slate-700 cursor-not-allowed"
                   />
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 ml-1">Size (Bytes)</label>
                   <input
                     name="size_bytes"
+                    readOnly
                     type="number"
                     value={form.size_bytes}
-                    onChange={handleChange}
-                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold"
+                    className="w-full px-5 py-4 bg-slate-100 border border-slate-200 rounded-2xl font-bold text-slate-700 cursor-not-allowed"
                   />
                 </div>
               </div>
